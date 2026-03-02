@@ -1,8 +1,8 @@
 """
-    reconcile(;model, market, cov_estimator=:LedWol)
+    reconcile(;model::AbstractString, market::AbstractString, cov_estimator::Symbol)
 Perform reconciliation for a given `market` and `model`. The base forecasts are sourced from the files stored in the `base-forecasts` directory. 
 """
-function reconcile(;model::AbstractString, market::AbstractString, cov_estimator::Symbol=:LedWol)
+function reconcile(;model::AbstractString, market::AbstractString, cov_estimator::Symbol)
     f = load(joinpath("base-forecasts", "$model-$market.jld2"))
     observations, forecasts, dates, in_sample_errors = 
         f["observations"], f["forecasts"], f["dates"], f["in_sample_errors"]
@@ -39,5 +39,5 @@ function reconcile(;model::AbstractString, market::AbstractString, cov_estimator
         W .= inv(transpose(SM)*inv(Σ)*SM)*transpose(SM)*inv(Σ)
         forecasts_thief[t, :] .= SM*W*forecasts[t, :]
     end
-    save(joinpath("results", "$model-$market.jld2"), "forecasts_thief", forecasts_thief, "forecasts", forecasts, "observations", observations, "dates", dates)
+    save(joinpath("results", "$model-$market-$cov_estimator.jld2"), "forecasts_thief", forecasts_thief, "forecasts", forecasts, "observations", observations, "dates", dates)
 end

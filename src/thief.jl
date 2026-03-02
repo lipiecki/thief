@@ -16,10 +16,10 @@ function run_integrity()
 end
 
 """
-    run_reconciliation(;cov_estimator=:LedWol)
+    run_reconciliation(;cov_estimator::Symbol)
 Run the reconciliation of base forecasts on all markets and models.
 """
-function run_reconciliation(cov_estimator::Symbol=:LedWol)
+function run_reconciliation(cov_estimator::Symbol)
     mkpath("results")
     for market in ["epex", "omie"]
         for model in ["arx", "narx", "xgb", "mitra"]
@@ -29,10 +29,10 @@ function run_reconciliation(cov_estimator::Symbol=:LedWol)
 end
 
 """
-    run_evaluation(start_date::Int, end_date::Int)
+    run_evaluation(start_date::Int, end_date::Int, cov_estimator::Symbol)
 Run the evaluation of base and reconcilied forecasts between the provided dates (YYYYMMDD format), print the relevant metrics (MAE, RMSE and p-value of the Diebold-Mariano test) to console.
 """
-function run_evaluation(start_date::Int, end_date::Int)
+function run_evaluation(start_date::Int, end_date::Int, cov_estimator::Symbol)
     println("\nTesting on the $start_date - $end_date period")
     hline = 80
     println("-"^hline)
@@ -52,7 +52,7 @@ function run_evaluation(start_date::Int, end_date::Int)
             block_indices = b > 1 ? (sum(no_block_forecasts[1:b-1])+1:sum(no_block_forecasts[1:b])) : 1:24
 
             for model in ["arx", "narx", "xgb", "mitra"]
-                f = load(joinpath("results", "$model-$market.jld2"))
+                f = load(joinpath("results", "$model-$market-$cov_estimator.jld2"))
                 observations, forecasts, forecasts_thief, dates =
                     f["observations"], f["forecasts"], f["forecasts_thief"], f["dates"]
 

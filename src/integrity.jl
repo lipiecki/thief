@@ -1,5 +1,5 @@
 """
-    integrity(;models, market)
+    integrity(;models::AbstractVector{<:AbstractString}, market::AbstractString)
 Perform data integrity check on a given `market` across specified `models`.
 """
 function integrity(;models::AbstractVector{<:AbstractString}, market::AbstractString)

@@ -26,7 +26,7 @@ let
         errors = zeros(2)
         for (m, market) in enumerate(["epex", "omie"])
             for model in models
-                f = load(joinpath("results", "$model-$market.jld2"))
+                f = load(joinpath("results", "$model-$market-LedWol.jld2"))
                 observations, forecasts, forecasts_thief, dates =
                     f["observations"], f["forecasts"], f["forecasts_thief"], f["dates"]
                 for (ibx, block) in enumerate(blocks)
@@ -55,26 +55,29 @@ let
             bar!((1+0.1:length(blocks)+0.1), results[model]["skill-score"][:, 2]; lw=0, color=colors[3], label="OMIE", bar_width=0.4)
             bar!(xticks=(1:length(blocks), ["$(block)" for block in blocks]))
 
-            plot!(ylims = (-5, 15.5))
-            plot!(framestyle=:grid, size=(500, 600), foreground_color_legend = nothing, background_color_legend=nothing)
-            plot!(dpi=500)
-            plot!(legendfont=font(10, "Times New Roman"), tickfont=font(10, "Times New Roman"))
-            plot!(legend=false, xguidefont = font(14, "Times New Roman"))
+            plot!(
+                framestyle=:grid,
+                size=(500, 600),
+                ylims = (-5, 15.5),
+                foreground_color_legend=nothing,
+                background_color_legend=nothing,
+                legend=false)
+            
             if model == "arx"
                 if year == 2021
                     plot!(legend=:topleft)
                 end
-                plot!(ylabel = "Gain (%)", yguidefont = font(14, "Times New Roman"))
+                plot!(ylabel = "Gain (%)")
             else
                 plot!(yformatter = x -> "")
             end
             if model == "mitra"
-                plot!(ylabel = string(year), yguide_position=:right, yguidefont = font(14, "Times New Roman"))
+                plot!(ylabel = string(year), yguide_position=:right)
             end
             if year == 2021
-                plot!(title=modelnames[model], titlefont = font(14, "Times New Roman"))
+                plot!(title=modelnames[model])
             elseif year == 2024
-                plot!(xlabel = "Block size (hours)", xguidefont = font(14, "Times New Roman"))
+                plot!(xlabel = "Block size (hours)")
             end
             plots[(model, year)] = plot!()
         end
@@ -86,6 +89,6 @@ let
         ("arx", 2024), ("narx", 2024), ("xgb", 2024), ("mitra", 2024),
     ]
     plot([plots[k] for k in keys]..., layout = grid(4,4), size=(1200, 1200), left_margin=[5mm -3mm -3mm -3mm], right_margin=[-3mm -3mm -3mm 5mm])
-    plot!(dpi=600)
+    plot!(dpi=500)
     savefig("figures/fig4.png")
 end

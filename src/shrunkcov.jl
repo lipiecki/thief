@@ -1,5 +1,5 @@
 """
-    shrunkcov!(Σ, ε; target=:LedWol)
+    shrunkcov!(Σ::Matrix{T}, ε::Matrix{T}; target::Symbol) where T<:AbstractFloat
 Compute the covariance matrix of forecat errors `ε` (n by m), where n is the sample size and m is the dimensionality of the time series.
 The covariance matrix is estimated using the shrinkage operator specified by `target`. Note that this is an in-place method that sores the output covariance matrix in `Σ`.
 
@@ -8,7 +8,7 @@ The covariance matrix is estimated using the shrinkage operator specified by `ta
 - `:SchStr`: diagonal shrinkage target with correlation-based optimal shrinakge intensity, proposed by Schäfer & Strimmer (2005)
 - `:WLS`: diagonal covariance matrix
 """
-function shrunkcov!(Σ::Matrix{T}, ε::Matrix{T}; target::Symbol=:LedWol) where T<:AbstractFloat
+function shrunkcov!(Σ::Matrix{T}, ε::Matrix{T}; target::Symbol) where T<:AbstractFloat
     n, m = size(ε)
     size(Σ) == (m, m) || error("mismatched dimensions")
     Σ .= zero(T)
