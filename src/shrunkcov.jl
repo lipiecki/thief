@@ -1,7 +1,7 @@
 """
     shrunkcov!(Σ::Matrix{T}, ε::Matrix{T}; target::Symbol) where T<:AbstractFloat
 Compute the covariance matrix of forecat errors `ε` (n by m), where n is the sample size and m is the dimensionality of the time series.
-The covariance matrix is estimated using the shrinkage operator specified by `target`. Note that this is an in-place method that sores the output covariance matrix in `Σ`.
+The covariance matrix is estimated using the shrinkage operator specified by `target`. Note that this is an in-place method that saves the output covariance matrix to `Σ`.
 
 `target` takes the following values:
 - `:LedWol`: constant correlation shrinkage target proposed by Ledoit & Wolf (2004)

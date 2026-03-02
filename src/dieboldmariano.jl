@@ -1,6 +1,6 @@
 """
     dieboldmariano(obs::AbstractVecOrMat{<:Real}, benchmark::AbstractVecOrMat{<:Real}, forecasts::AbstractVecOrMat{<:Real})
-    Multivariate version of the Diebold-Mariano test based on the L2 norm of forecast errors. Tests for the significance of the superior unconditional predictive ability of `forecasts` over `benchmark`.
+    Multivariate version of the Diebold-Mariano test based on the L2 norm of forecast errors. Tests whether `forecasts` are significantly more accurate than `benchmark`.
 """
 function dieboldmariano(obs::AbstractVecOrMat{<:Real},
             benchmark::AbstractVecOrMat{<:Real}, 
