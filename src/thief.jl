@@ -1,4 +1,4 @@
-using JLD2, Statistics, Distributions, Combinatorics, LinearAlgebra
+using JLD2, Statistics, Distributions, LinearAlgebra
 
 include("shrunkcov.jl")
 include("reconcile.jl")
