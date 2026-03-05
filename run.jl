@@ -5,9 +5,10 @@ This script performs reconciliation of base forecasts and evaluation of the resu
 using Pkg
 include(joinpath("src", "thief.jl"))
 
-start_date = parse(Int, ARGS[1])
-end_date = parse(Int, ARGS[2])
-cov_estimator = Symbol(ARGS[3])
+start_date = 20210101
+end_date = 20241231
+
+cov_estimator = Symbol(ARGS[1])
 
 run_integrity()
 run_reconciliation(cov_estimator)
