@@ -11,8 +11,7 @@ The covariance matrix is estimated using the shrinkage operator specified by `ta
 function shrunkcov!(Σ::Matrix{T}, ε::Matrix{T}; target::Symbol) where T<:AbstractFloat
     n, m = size(ε)
     size(Σ) == (m, m) || error("mismatched dimensions")
-    Σ .= zero(T)
-    Σ .= transpose(ε)*ε
+    mul!(Σ, transpose(ε), ε)
     Σ ./= n
     
     if target == :LedWol
@@ -31,7 +30,7 @@ function shrinkLedWol!(Σ::Matrix{T}, ε::Matrix{T}) where T<:AbstractFloat
     n, m = size(ε)
     F = zeros(T, m, m)
     r = zero(T)
-    for i in 1:(m-1)
+    for i in 1:m-1
         for j in i+1:m
             r += (Σ[i, j])/sqrt(Σ[i, i]*Σ[j, j])
         end
@@ -46,21 +45,15 @@ function shrinkLedWol!(Σ::Matrix{T}, ε::Matrix{T}) where T<:AbstractFloat
     end
     π̂ = zero(T)
     ρ̂ = zero(T)
-    for i in 1:m
-        for j in i+1:m
-            π̂ += 2*sum(abs2, @view(ε[:, i]).*@view(ε[:, j]) .- Σ[i, j])
-            vi = sum((abs2.(@view(ε[:, i])) .- Σ[i, i]).*(@view(ε[:, i]).*@view(ε[:, j]) .- Σ[i, j]))
-            vj = sum((abs2.(@view(ε[:, j])) .- Σ[j, j]).*(@view(ε[:, i]).*@view(ε[:, j]) .- Σ[i, j]))
-            ρ̂ += r*(sqrt(Σ[j, j]/Σ[i, i])*vi + sqrt(Σ[i, i]/Σ[j, j])*vj)
-        end
-    end
-    π̂ /= n
-    ρ̂ /= n
-    γ̂ = .0
+    γ̂ = zero(T)
     for i in 1:m
         γ̂ += abs2(F[i, i] - Σ[i, i])
         for j in i+1:m
-            γ̂ += 2*abs2(F[i, j] - Σ[i, j])
+            @views π̂ += sum(abs2, ε[:, i].*ε[:, j] .- Σ[i, j]) / n
+            @views vi = sum((abs2.(ε[:, i]) .- Σ[i, i]).*(ε[:, i].*ε[:, j] .- Σ[i, j]))
+            @views vj = sum((abs2.(ε[:, j]) .- Σ[j, j]).*(ε[:, i].*ε[:, j] .- Σ[i, j]))
+            ρ̂ += r/2*(sqrt(Σ[j, j]/Σ[i, i])*vi + sqrt(Σ[i, i]/Σ[j, j])*vj) / n
+            γ̂ += abs2(F[i, j] - Σ[i, j])
         end
     end
     κ = (π̂ - ρ̂)/γ̂
@@ -76,16 +69,11 @@ function shrinkSchStr!(Σ::Matrix{T}, ε::Matrix{T}) where T<:AbstractFloat
         F[i, i] = Σ[i, i]
     end
     π̂ = zero(T)
-    for i in 1:m
-        for j in i+1:m
-            π̂ += 2*sum(abs2, (@view(ε[:, i]).*@view(ε[:, j]) .- Σ[i, j])./sqrt(Σ[i, i]*Σ[j, j]))
-        end
-    end
-    π̂ /= n
     γ̂ = zero(T)
     for i in 1:m
         for j in i+1:m
-            γ̂ += 2*abs2(Σ[i, j]/sqrt(Σ[i, i]*Σ[j, j]))
+            @views π̂ += sum(abs2, (ε[:, i].*ε[:, j] .- Σ[i, j])) / (Σ[i, i]*Σ[j, j]) / n
+            γ̂ += abs2(Σ[i, j]) / (Σ[i, i]*Σ[j, j])
         end
     end
     κ = π̂/γ̂
