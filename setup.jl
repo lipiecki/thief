@@ -1,3 +1,7 @@
+"""
+This script sets up the projects by installing the required packages and downloading the base forecasts from HuggingFace.
+"""
+
 using Pkg
 Pkg.instantiate()
 
