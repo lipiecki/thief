@@ -1,3 +1,11 @@
+"""
+This script generates the figures from the paper. It should be run with a single argument, which specifies the number of the figure to generate:
+```
+julia --project plot.jl {X}
+```
+where {X} is `1`, `2` or `4`.
+"""
+
 using Plots, JLD2, Measures, LaTeXStrings, ColorSchemes
 
 function fig1()
