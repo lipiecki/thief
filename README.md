@@ -1,5 +1,5 @@
 # THieF
-This repository hosts replication code for the paper *Stealing Accuracy: Predicting Day-ahead Electricity Prices with Temporal Hierarchy Forecasting (THieF)*, A. Lipiecki, K. Bilińska, N. Kourentzes & R. Weron (2025) [arXiv:2508.11372](https://arxiv.org/abs/2508.11372).
+This repository hosts replication code for the paper [A. Lipiecki, K. Bilińska, N. Kourentzes & R. Weron, *Stealing Accuracy: Predicting Day-ahead Electricity Prices with Temporal Hierarchy Forecasting (THieF)*, International Journal of Forecasting 42(4) (2026)](https://doi.org/10.1016/j.ijforecast.2026.03.003).
 
 All the commands provided in this README are meant to be executed in shell.
 
@@ -10,7 +10,6 @@ The dataset consits of 8 files `{model}-{market}.jld2` (model $\in$ {arx, mitra,
 - forecasts of day-ahead prices for all 60 hierarchy levels under "forecasts"
 - corresponding dates in the YYYYMMDD format under "dates"
 - in-sample forecat errors from each rolling window under "in_sample_errors"
-
 
 ## Structure
 - `src/`: directory with function definitions used for reconciliation and evaluation
